@@ -1960,6 +1960,20 @@ inline static hipError_t hipMemcpy2D(void* dst, size_t dpitch, const void* src, 
         cudaMemcpy2D(dst, dpitch, src, spitch, width, height, kind));
 }
 
+inline static hipMemoryType getHipMemoryType(CUmemorytype type) {
+    switch (type) {
+        case CU_MEMORYTYPE_HOST:
+            return hipMemoryTypeHost;
+        case CU_MEMORYTYPE_DEVICE:
+            return hipMemoryTypeDevice;
+        case CU_MEMORYTYPE_ARRAY:
+            return hipMemoryTypeArray;
+        case CU_MEMORYTYPE_UNIFIED:
+            return hipMemoryTypeUnified;
+    }
+    return hipMemoryTypeHost;
+}
+
 inline static hipError_t hipMemcpyParam2D(const hip_Memcpy2D* pCopy) {
   if(pCopy == nullptr) {
     return hipCUResultTohipError(cuMemcpy2D(nullptr));
@@ -2668,13 +2682,28 @@ inline static hipError_t hipPointerGetAttributes(hipPointerAttribute_t* attribut
 
 inline static hipError_t hipPointerGetAttribute(void* data, hipPointer_attribute attribute,
                                                 hipDeviceptr_t ptr) {
-    return hipCUResultTohipError(cuPointerGetAttribute(data, attribute, ptr));
+    hipError_t err = hipCUResultTohipError(cuPointerGetAttribute(data, attribute, ptr));
+    if (err == hipSuccess &&
+        attribute == HIP_POINTER_ATTRIBUTE_MEMORY_TYPE &&
+        data != nullptr) {
+        *reinterpret_cast<uint32_t*>(data) = getHipMemoryType(*reinterpret_cast<CUmemorytype*>(data));
+    }
+    return err;
 }
 
 inline static hipError_t hipDrvPointerGetAttributes(unsigned int numAttributes,
                                                     hipPointer_attribute* attributes,
                                                     void** data, hipDeviceptr_t ptr) {
-    return hipCUResultTohipError(cuPointerGetAttributes(numAttributes, attributes, data, ptr));
+    hipError_t err = hipCUResultTohipError(cuPointerGetAttributes(numAttributes, attributes, data, ptr));
+    if (err == hipSuccess && attributes != nullptr) {
+        for(int i = 0; i < numAttributes; i++) {
+          if(attributes[i] == HIP_POINTER_ATTRIBUTE_MEMORY_TYPE) {
+            *reinterpret_cast<uint32_t**>(data)[i] = getHipMemoryType(*reinterpret_cast<CUmemorytype**>(data)[i]);
+            break;
+          }
+        }
+    }
+    return err;
 }
 
 inline static hipError_t hipMemGetInfo(size_t* free, size_t* total) {
