@@ -83,6 +83,7 @@ typedef enum cudaMemcpyKind hipMemcpyKind;
 #define hipMemcpyHostToDevice cudaMemcpyHostToDevice
 #define hipMemcpyDeviceToHost cudaMemcpyDeviceToHost
 #define hipMemcpyDeviceToDevice cudaMemcpyDeviceToDevice
+#define hipMemcpyDeviceToDeviceNoCU cudaMemcpyDeviceToDevice
 #define hipMemcpyDefault cudaMemcpyDefault
 
 typedef enum hipMemoryAdvise {
@@ -1368,6 +1369,7 @@ inline static enum cudaMemcpyKind hipMemcpyKindToCudaMemcpyKind(hipMemcpyKind ki
         case hipMemcpyDeviceToHost:
             return cudaMemcpyDeviceToHost;
         case hipMemcpyDeviceToDevice:
+        case hipMemcpyDeviceToDeviceNoCU:
             return cudaMemcpyDeviceToDevice;
         case hipMemcpyDefault:
             return cudaMemcpyDefault;
