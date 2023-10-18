@@ -1369,7 +1369,6 @@ inline static enum cudaMemcpyKind hipMemcpyKindToCudaMemcpyKind(hipMemcpyKind ki
         case hipMemcpyDeviceToHost:
             return cudaMemcpyDeviceToHost;
         case hipMemcpyDeviceToDevice:
-        case hipMemcpyDeviceToDeviceNoCU:
             return cudaMemcpyDeviceToDevice;
         case hipMemcpyDefault:
             return cudaMemcpyDefault;
