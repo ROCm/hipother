@@ -551,99 +551,99 @@ typedef struct HIP_MEMCPY3D {
   unsigned int Depth;
 } HIP_MEMCPY3D;
 
-static inline void hipMemcpy3DTocudaMemcpy3D(CUDA_MEMCPY3D &a, const HIP_MEMCPY3D* p){
-    a.srcXInBytes = (size_t)p->srcXInBytes;
-    a.srcY = (size_t)p->srcY;
-    a.srcZ = (size_t)p->srcZ;
-    a.srcLOD = (size_t)p->srcLOD;
+static inline void hipMemcpy3DTocudaMemcpy3D(CUDA_MEMCPY3D* a, const HIP_MEMCPY3D* p){
+    a->srcXInBytes = (size_t)p->srcXInBytes;
+    a->srcY = (size_t)p->srcY;
+    a->srcZ = (size_t)p->srcZ;
+    a->srcLOD = (size_t)p->srcLOD;
     switch (p->srcMemoryType) {
         case hipMemoryTypeHost:
-            a.srcMemoryType = CU_MEMORYTYPE_HOST;
+            a->srcMemoryType = CU_MEMORYTYPE_HOST;
             break;
         case hipMemoryTypeDevice:
-            a.srcMemoryType = CU_MEMORYTYPE_DEVICE;
+            a->srcMemoryType = CU_MEMORYTYPE_DEVICE;
             break;
         case hipMemoryTypeArray:
-            a.srcMemoryType = CU_MEMORYTYPE_ARRAY;
+            a->srcMemoryType = CU_MEMORYTYPE_ARRAY;
             break;
         default:
-            a.srcMemoryType = CU_MEMORYTYPE_UNIFIED;
+            a->srcMemoryType = CU_MEMORYTYPE_UNIFIED;
     }
-    a.srcHost = p->srcHost;
-    a.srcDevice =(CUdeviceptr)p->srcDevice;
-    a.srcArray = (CUarray)p->srcArray;
-    a.reserved0 = nullptr;
-    a.srcPitch = (size_t)p->srcPitch;
-    a.srcHeight = (size_t)p->srcHeight;
-    a.dstXInBytes = (size_t)p->dstXInBytes;
-    a.dstY = (size_t)p->dstY;
-    a.dstZ = (size_t)p->dstZ;
-    a.dstLOD = (size_t)p->dstLOD;
+    a->srcHost = p->srcHost;
+    a->srcDevice =(CUdeviceptr)p->srcDevice;
+    a->srcArray = (CUarray)p->srcArray;
+    a->reserved0 = NULL;
+    a->srcPitch = (size_t)p->srcPitch;
+    a->srcHeight = (size_t)p->srcHeight;
+    a->dstXInBytes = (size_t)p->dstXInBytes;
+    a->dstY = (size_t)p->dstY;
+    a->dstZ = (size_t)p->dstZ;
+    a->dstLOD = (size_t)p->dstLOD;
     switch (p->dstMemoryType) {
         case hipMemoryTypeHost:
-            a.dstMemoryType = CU_MEMORYTYPE_HOST;
+            a->dstMemoryType = CU_MEMORYTYPE_HOST;
             break;
         case hipMemoryTypeDevice:
-            a.dstMemoryType = CU_MEMORYTYPE_DEVICE;
+            a->dstMemoryType = CU_MEMORYTYPE_DEVICE;
             break;
         case hipMemoryTypeArray:
-            a.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+            a->dstMemoryType = CU_MEMORYTYPE_ARRAY;
             break;
         default:
-            a.dstMemoryType = CU_MEMORYTYPE_UNIFIED;
+            a->dstMemoryType = CU_MEMORYTYPE_UNIFIED;
     }
-    a.dstHost = p->dstHost;
-    a.dstDevice = (CUdeviceptr)p->dstDevice;
-    a.dstArray = (CUarray)p->dstArray;
-    a.reserved1 = nullptr;
-    a.dstPitch = (size_t)p->dstPitch;
-    a.dstHeight = (size_t)p->dstHeight;
-    a.WidthInBytes = (size_t)p->WidthInBytes;
-    a.Height = (size_t)p->Height;
-    a.Depth = (size_t)p->Depth;
+    a->dstHost = p->dstHost;
+    a->dstDevice = (CUdeviceptr)p->dstDevice;
+    a->dstArray = (CUarray)p->dstArray;
+    a->reserved1 = NULL;
+    a->dstPitch = (size_t)p->dstPitch;
+    a->dstHeight = (size_t)p->dstHeight;
+    a->WidthInBytes = (size_t)p->WidthInBytes;
+    a->Height = (size_t)p->Height;
+    a->Depth = (size_t)p->Depth;
 }
 
-static inline void hipMemcpy2DTocudaMemcpy2D(CUDA_MEMCPY2D &a, const hip_Memcpy2D* p){
-    a.srcXInBytes = (size_t)p->srcXInBytes;
-    a.srcY = (size_t)p->srcY;
+static inline void hipMemcpy2DTocudaMemcpy2D(CUDA_MEMCPY2D* a, const hip_Memcpy2D* p){
+    a->srcXInBytes = (size_t)p->srcXInBytes;
+    a->srcY = (size_t)p->srcY;
     switch (p->srcMemoryType) {
         case hipMemoryTypeHost:
-            a.srcMemoryType = CU_MEMORYTYPE_HOST;
+            a->srcMemoryType = CU_MEMORYTYPE_HOST;
             break;
         case hipMemoryTypeDevice:
-            a.srcMemoryType = CU_MEMORYTYPE_DEVICE;
+            a->srcMemoryType = CU_MEMORYTYPE_DEVICE;
             break;
         case hipMemoryTypeArray:
-            a.srcMemoryType = CU_MEMORYTYPE_ARRAY;
+            a->srcMemoryType = CU_MEMORYTYPE_ARRAY;
             break;
         default:
-            a.srcMemoryType = CU_MEMORYTYPE_UNIFIED;
+            a->srcMemoryType = CU_MEMORYTYPE_UNIFIED;
     }
-    a.srcHost = p->srcHost;
-    a.srcDevice = (CUdeviceptr)p->srcDevice;
-    a.srcArray = (CUarray)p->srcArray;
-    a.srcPitch = (size_t)p->srcPitch;
-    a.dstXInBytes = (size_t)p->dstXInBytes;
-    a.dstY = (size_t)p->dstY;
+    a->srcHost = p->srcHost;
+    a->srcDevice = (CUdeviceptr)p->srcDevice;
+    a->srcArray = (CUarray)p->srcArray;
+    a->srcPitch = (size_t)p->srcPitch;
+    a->dstXInBytes = (size_t)p->dstXInBytes;
+    a->dstY = (size_t)p->dstY;
     switch (p->dstMemoryType) {
         case hipMemoryTypeHost:
-            a.dstMemoryType = CU_MEMORYTYPE_HOST;
+            a->dstMemoryType = CU_MEMORYTYPE_HOST;
             break;
         case hipMemoryTypeDevice:
-            a.dstMemoryType = CU_MEMORYTYPE_DEVICE;
+            a->dstMemoryType = CU_MEMORYTYPE_DEVICE;
             break;
         case hipMemoryTypeArray:
-            a.dstMemoryType = CU_MEMORYTYPE_ARRAY;
+            a->dstMemoryType = CU_MEMORYTYPE_ARRAY;
             break;
         default:
-            a.dstMemoryType = CU_MEMORYTYPE_UNIFIED;
+            a->dstMemoryType = CU_MEMORYTYPE_UNIFIED;
     }
-    a.dstHost = p->dstHost;
-    a.dstDevice = (CUdeviceptr)p->dstDevice;
-    a.dstArray = (CUarray)p->dstArray;
-    a.dstPitch = (size_t)p->dstPitch;
-    a.WidthInBytes = (size_t)p->WidthInBytes;
-    a.Height = (size_t)p->Height;
+    a->dstHost = p->dstHost;
+    a->dstDevice = (CUdeviceptr)p->dstDevice;
+    a->dstArray = (CUarray)p->dstArray;
+    a->dstPitch = (size_t)p->dstPitch;
+    a->WidthInBytes = (size_t)p->WidthInBytes;
+    a->Height = (size_t)p->Height;
 }
 
 
@@ -1975,21 +1975,21 @@ inline static hipMemoryType getHipMemoryType(CUmemorytype type) {
 }
 
 inline static hipError_t hipMemcpyParam2D(const hip_Memcpy2D* pCopy) {
-  if(pCopy == nullptr) {
-    return hipCUResultTohipError(cuMemcpy2D(nullptr));
+  if(pCopy == NULL) {
+    return hipCUResultTohipError(cuMemcpy2D(NULL));
   } else {
     CUDA_MEMCPY2D cudaCopy = {0};
-    hipMemcpy2DTocudaMemcpy2D(cudaCopy, pCopy);
+    hipMemcpy2DTocudaMemcpy2D(&cudaCopy, pCopy);
     return hipCUResultTohipError(cuMemcpy2D((const CUDA_MEMCPY2D*)&cudaCopy));
   }
 }
 
 inline static hipError_t hipMemcpyParam2DAsync(const hip_Memcpy2D* pCopy, hipStream_t stream __dparm(0)) {
-  if(pCopy == nullptr) {
-    return hipCUResultTohipError(cuMemcpy2DAsync(nullptr, stream));
+  if(pCopy == NULL) {
+    return hipCUResultTohipError(cuMemcpy2DAsync(NULL, stream));
   } else {
     CUDA_MEMCPY2D cudaCopy = {0};
-    hipMemcpy2DTocudaMemcpy2D(cudaCopy, pCopy);
+    hipMemcpy2DTocudaMemcpy2D(&cudaCopy, pCopy);
     return hipCUResultTohipError(cuMemcpy2DAsync((const CUDA_MEMCPY2D*)&cudaCopy, stream));
   }
 }
@@ -2003,21 +2003,21 @@ inline static hipError_t hipMemcpy3DAsync(const struct hipMemcpy3DParms *p, hipS
 }
 
 inline static hipError_t hipDrvMemcpy3D(const HIP_MEMCPY3D* pcopy) {
-    if(pcopy == nullptr) {
-      return hipCUResultTohipError(cuMemcpy3D(nullptr));
+    if(pcopy == NULL) {
+      return hipCUResultTohipError(cuMemcpy3D(NULL));
     } else {
       CUDA_MEMCPY3D cudaCopy = {0};
-      hipMemcpy3DTocudaMemcpy3D(cudaCopy, pcopy);
+      hipMemcpy3DTocudaMemcpy3D(&cudaCopy, pcopy);
       return hipCUResultTohipError(cuMemcpy3D((const CUDA_MEMCPY3D*)&cudaCopy));
     }
 }
 
 inline static hipError_t hipDrvMemcpy3DAsync(const HIP_MEMCPY3D *pcopy, hipStream_t stream) {
-    if(pcopy == nullptr) {
-      return hipCUResultTohipError(cuMemcpy3DAsync(nullptr, stream));
+    if(pcopy == NULL) {
+      return hipCUResultTohipError(cuMemcpy3DAsync(NULL, stream));
     } else {
       CUDA_MEMCPY3D cudaCopy = {0};
-      hipMemcpy3DTocudaMemcpy3D(cudaCopy, pcopy);
+      hipMemcpy3DTocudaMemcpy3D(&cudaCopy, pcopy);
       return hipCUResultTohipError(cuMemcpy3DAsync((const CUDA_MEMCPY3D*)&cudaCopy, stream));
     }
 }
@@ -2685,8 +2685,8 @@ inline static hipError_t hipPointerGetAttribute(void* data, hipPointer_attribute
     hipError_t err = hipCUResultTohipError(cuPointerGetAttribute(data, attribute, ptr));
     if (err == hipSuccess &&
         attribute == HIP_POINTER_ATTRIBUTE_MEMORY_TYPE &&
-        data != nullptr) {
-        *reinterpret_cast<uint32_t*>(data) = getHipMemoryType(*reinterpret_cast<CUmemorytype*>(data));
+        data != NULL) {
+        *(uint32_t*) data = getHipMemoryType(*(CUmemorytype*) data);
     }
     return err;
 }
@@ -2695,10 +2695,10 @@ inline static hipError_t hipDrvPointerGetAttributes(unsigned int numAttributes,
                                                     hipPointer_attribute* attributes,
                                                     void** data, hipDeviceptr_t ptr) {
     hipError_t err = hipCUResultTohipError(cuPointerGetAttributes(numAttributes, attributes, data, ptr));
-    if (err == hipSuccess && attributes != nullptr) {
+    if (err == hipSuccess && attributes != NULL) {
         for(int i = 0; i < numAttributes; i++) {
           if(attributes[i] == HIP_POINTER_ATTRIBUTE_MEMORY_TYPE) {
-            *reinterpret_cast<uint32_t**>(data)[i] = getHipMemoryType(*reinterpret_cast<CUmemorytype**>(data)[i]);
+            *((uint32_t**) data)[i] = getHipMemoryType(*((CUmemorytype**) data)[i]);
             break;
           }
         }
