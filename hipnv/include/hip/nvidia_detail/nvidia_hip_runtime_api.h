@@ -1848,7 +1848,7 @@ typedef struct hipMemAllocationProp {
     /** Memory allocation type */
     hipMemAllocationType type;
     /** Requested handle type */
-    hipMemAllocationHandleType requestedHandleType;
+    hipMemAllocationHandleType requestedHandleTypes;
     /** Location of allocation */
     hipMemLocation location;
     /**
@@ -2809,7 +2809,7 @@ inline static hipError_t hipDeviceGetAttribute(int* pi, hipDeviceAttribute_t att
 inline static CUmemAllocationProp hipMemAllocationPropToCUmemAllocationProp(const hipMemAllocationProp* prop) {
     CUmemAllocationProp cuProp;
     cuProp.type = (CUmemAllocationType)prop->type;
-    cuProp.requestedHandleTypes = (CUmemAllocationHandleType)prop->requestedHandleType;
+    cuProp.requestedHandleTypes = (CUmemAllocationHandleType)prop->requestedHandleTypes;
     cuProp.location.type = (CUmemLocationType)prop->location.type;
     cuProp.location.id = prop->location.id;
     cuProp.win32HandleMetaData = prop->win32HandleMetaData;
@@ -2825,7 +2825,7 @@ inline static CUmemAllocationProp hipMemAllocationPropToCUmemAllocationProp(cons
 inline static hipMemAllocationProp CUmemAllocationPropToHipMemAllocationProp(const CUmemAllocationProp* prop) {
   hipMemAllocationProp hipProp;
   hipProp.type = (hipMemAllocationType)prop->type;
-  hipProp.requestedHandleType = (hipMemAllocationHandleType)prop->requestedHandleTypes;
+  hipProp.requestedHandleTypes = (hipMemAllocationHandleType)prop->requestedHandleTypes;
   hipProp.location.type = (hipMemLocationType)prop->location.type;
   hipProp.location.id = prop->location.id;
   hipProp.win32HandleMetaData = prop->win32HandleMetaData;
