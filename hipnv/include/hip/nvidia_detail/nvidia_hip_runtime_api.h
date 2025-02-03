@@ -2781,7 +2781,7 @@ inline static hipError_t hipDeviceGetAttribute(int* pi, hipDeviceAttribute_t att
         case hipDeviceAttributeMaxTextureCubemap:
             cdattr = cudaDevAttrMaxTextureCubemapWidth;
             break;
-        case hipDeviceAttributePciDomainID:
+        case hipDeviceAttributePciDomainId:
             cdattr = cudaDevAttrPciDomainId;
             break;
         case hipDeviceAttributePersistingL2CacheMaxSize:
