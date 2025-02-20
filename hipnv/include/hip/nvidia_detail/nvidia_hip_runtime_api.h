@@ -2857,15 +2857,23 @@ inline static CUmemAccessDesc* hipMemAccessDescToCUmemAccessDesc(const hipMemAcc
 inline static hipError_t hipMemGetAllocationGranularity(size_t* granularity,
                                                         const hipMemAllocationProp* prop,
                                                         hipMemAllocationGranularity_flags option) {
-    CUmemAllocationProp cuProp = hipMemAllocationPropToCUmemAllocationProp(prop);
-    return hipCUResultTohipError(cuMemGetAllocationGranularity(granularity, &cuProp, option));
+    if (prop == NULL) {
+        return hipCUResultTohipError(cuMemGetAllocationGranularity(granularity, NULL, option));
+    } else {
+        CUmemAllocationProp cuProp = hipMemAllocationPropToCUmemAllocationProp(prop);
+        return hipCUResultTohipError(cuMemGetAllocationGranularity(granularity, &cuProp, option));
+    }
 }
 inline static hipError_t hipMemCreate(hipMemGenericAllocationHandle_t* handle,
                                       size_t size,
                                       const hipMemAllocationProp* prop,
                                       unsigned long long flags) {
-    CUmemAllocationProp cuProp = hipMemAllocationPropToCUmemAllocationProp(prop);
-    return hipCUResultTohipError(cuMemCreate(handle, size, &cuProp, flags));
+    if (prop == NULL) {
+        return hipCUResultTohipError(cuMemCreate(handle, size, NULL, flags));
+    } else {
+        CUmemAllocationProp cuProp = hipMemAllocationPropToCUmemAllocationProp(prop);
+        return hipCUResultTohipError(cuMemCreate(handle, size, &cuProp, flags));
+    }
 }
 inline static hipError_t hipMemRelease(hipMemGenericAllocationHandle_t handle) {
     return hipCUResultTohipError(cuMemRelease(handle));
