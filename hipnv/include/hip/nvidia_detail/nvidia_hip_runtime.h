@@ -110,7 +110,7 @@ typedef int hipLaunchParm;
 #undef assert
 #define assert(COND)                                                                               \
   {                                                                                                \
-    if (!COND) {                                                                                   \
+    if (!(COND)) {                                                                                 \
       abort_();                                                                                    \
     }                                                                                              \
   }
