@@ -1709,6 +1709,15 @@ typedef cudaUserObject_t hipUserObject_t;
 #if CUDA_VERSION >= CUDA_12030
 typedef cudaGraphEdgeData hipGraphEdgeData;
 #endif
+typedef cudaLaunchConfig_t hipLaunchConfig_t;
+typedef cudaLaunchAttribute hipLaunchAttribute;
+typedef CUlaunchAttribute hipDrvLaunchAttribute;
+typedef cudaKernel_t hipKernel_t;
+typedef CUlaunchConfig HIP_LAUNCH_CONFIG;
+typedef CUlaunchAttributeID hipDrvLaunchAttributeID;
+typedef CUlaunchAttributeValue hipDrvLaunchAttributeValue;
+#define hipLaunchAttributeCooperative cudaLaunchAttributeCooperative
+#define hipDrvLaunchAttributeCooperative CU_LAUNCH_ATTRIBUTE_COOPERATIVE
 
 typedef enum cudaGraphNodeType hipGraphNodeType;
 #define hipGraphNodeTypeKernel cudaGraphNodeTypeKernel
@@ -3405,6 +3414,11 @@ inline static hipError_t hipLaunchKernel(const void* function_address, dim3 numB
         cudaLaunchKernel(function_address, numBlocks, dimBlocks, args, sharedMemBytes, stream));
 }
 
+inline static hipError_t hipLaunchKernelExC(const hipLaunchConfig_t* config, const void* func, void** args) {
+    return hipCUDAErrorTohipError(
+        cudaLaunchKernelExC(config, func, args));
+}
+
 inline static hipError_t hipModuleLaunchKernel(hipFunction_t f, unsigned int gridDimX,
                                                unsigned int gridDimY, unsigned int gridDimZ,
                                                unsigned int blockDimX, unsigned int blockDimY,
@@ -3800,6 +3814,17 @@ inline static hipError_t hipLaunchCooperativeKernel(T f, dim3 gridDim, dim3 bloc
                                              void** kernelParams, unsigned int sharedMemBytes, hipStream_t stream) {
     return hipCUDAErrorTohipError(
             cudaLaunchCooperativeKernel(reinterpret_cast<const void*>(f), gridDim, blockDim, kernelParams, sharedMemBytes, stream));
+}
+
+inline static hipError_t hipDrvLaunchKernelEx(const HIP_LAUNCH_CONFIG* config, hipFunction_t f, void** params, void** extra) {
+    return hipCUResultTohipError(
+        cuLaunchKernelEx(config, f, params, extra));
+}
+
+template <typename... KernelArgs, typename... Params>
+inline static hipError_t hipLaunchKernelEx(const hipLaunchConfig_t* config, void (*kernel)(KernelArgs...), Params&&... args) {
+    return hipCUDAErrorTohipError(
+        cudaLaunchKernelEx(config, kernel, std::forward<Params>(args)...));
 }
 
 inline static hipError_t hipTexObjectCreate(hipTextureObject_t* pTexObject,
