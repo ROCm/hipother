@@ -429,6 +429,44 @@ typedef enum cudaResourceViewFormat hipResourceViewFormat;
 #define HIPRTC_JIT_FAST_COMPILE CU_JIT_FAST_COMPILE
 #define HIPRTC_JIT_NUM_OPTIONS CU_JIT_NUM_OPTIONS
 
+#define hipJitOptionMaxRegisters CU_JIT_MAX_REGISTERS
+#define hipJitOptionThreadsPerBlock CU_JIT_THREADS_PER_BLOCK
+#define hipJitOptionWallTime CU_JIT_WALL_TIME
+#define hipJitOptionInfoLogBuffer CU_JIT_INFO_LOG_BUFFER
+#define hipJitOptionInfoLogBufferSizeBytes CU_JIT_INFO_LOG_BUFFER_SIZE_BYTES
+#define hipJitOptionErrorLogBuffer CU_JIT_ERROR_LOG_BUFFER
+#define hipJitOptionErrorLogBufferSizeBytes CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES
+#define hipJitOptionOptimizationLevel CU_JIT_OPTIMIZATION_LEVEL
+#define hipJitOptionTargetFromContext CU_JIT_TARGET_FROM_CUCONTEXT
+#define hipJitOptionTarget CU_JIT_TARGET
+#define hipJitOptionFallbackStrategy CU_JIT_FALLBACK_STRATEGY
+#define hipJitOptionGenerateDebugInfo CU_JIT_GENERATE_DEBUG_INFO
+#define hipJitOptionLogVerbose CU_JIT_LOG_VERBOSE
+#define hipJitOptionGenerateLineInfo CU_JIT_GENERATE_LINE_INFO
+#define hipJitOptionCacheMode CU_JIT_CACHE_MODE
+#define hipJitOptionSm3xOpt CU_JIT_NEW_SM3X_OPT
+#define hipJitOptionFastCompile CU_JIT_FAST_COMPILE
+#define hipJitOptionGlobalSymbolNames CU_JIT_GLOBAL_SYMBOL_NAMES
+#define hipJitOptionGlobalSymbolAddresses CU_JIT_GLOBAL_SYMBOL_ADDRESSES
+#define hipJitOptionGlobalSymbolCount CU_JIT_GLOBAL_SYMBOL_COUNT
+#define hipJitOptionLto CU_JIT_LTO
+#define hipJitOptionFtz CU_JIT_FTZ
+#define hipJitOptionPrecDiv CU_JIT_PREC_DIV
+#define hipJitOptionPrecSqrt CU_JIT_PREC_SQRT
+#define hipJitOptionFma CU_JIT_FMA
+#define hipJitOptionPositionIndependentCode CU_JIT_POSITION_INDEPENDENT_CODE
+#define hipJitOptionMinCTAPerSM CU_JIT_MIN_CTA_PER_SM
+#define hipJitOptionMaxThreadsPerBlock CU_JIT_MAX_THREADS_PER_BLOCK
+#define hipJitOptionOverrideDirectiveValues CU_JIT_OVERRIDE_DIRECTIVE_VALUES
+#define hipJitOptionNumOptions CU_JIT_NUM_OPTIONS
+#define hipJitInputCubin CU_JIT_INPUT_CUBIN
+#define hipJitInputPtx CU_JIT_INPUT_PTX
+#define hipJitInputFatBinary CU_JIT_INPUT_FATBINARY
+#define hipJitInputObject CU_JIT_INPUT_OBJECT
+#define hipJitInputLibrary CU_JIT_INPUT_LIBRARY
+#define hipJitInputNvvm CU_JIT_INPUT_NVVM
+#define hipJitNumInputTypes CU_JIT_NUM_INPUT_TYPES
+
 typedef cudaEvent_t hipEvent_t;
 typedef cudaStream_t hipStream_t;
 typedef cudaIpcEventHandle_t hipIpcEventHandle_t;
@@ -439,6 +477,7 @@ typedef enum cudaFuncCache hipFuncCache_t;
 typedef CUcontext hipCtx_t;
 typedef enum cudaSharedMemConfig hipSharedMemConfig;
 typedef CUfunc_cache hipFuncCache;
+typedef CUjitInputType hipJitInputType;
 typedef CUjit_option hipJitOption;
 typedef CUdevice hipDevice_t;
 typedef enum cudaDeviceP2PAttr hipDeviceP2PAttr;
@@ -449,6 +488,7 @@ typedef enum cudaDeviceP2PAttr hipDeviceP2PAttr;
 #define hipFuncAttributeMaxDynamicSharedMemorySize cudaFuncAttributeMaxDynamicSharedMemorySize
 #define hipFuncAttributePreferredSharedMemoryCarveout cudaFuncAttributePreferredSharedMemoryCarveout
 
+typedef CUlinkState hipLinkState_t;
 typedef CUmodule hipModule_t;
 typedef CUfunction hipFunction_t;
 typedef CUdeviceptr hipDeviceptr_t;
@@ -3358,6 +3398,29 @@ inline static hipError_t hipDeviceSetLimit(hipLimit_t limit, size_t value) {
 
 inline static hipError_t hipDeviceTotalMem(size_t* bytes, hipDevice_t device) {
     return hipCUResultTohipError(cuDeviceTotalMem(bytes, device));
+}
+
+inline static hipError_t hipLinkAddData(hipLinkState_t state, hipJitInputType type, void* data,
+                                        size_t size, const char* name, unsigned int numOptions,
+                                        hipJitOption* options, void** optionValues) {
+    return hipCUResultTohipError(
+    cuLinkAddData(state, type, data, size, name, numOptions, options, optionValues));
+}
+inline static hipError_t hipLinkAddFile(hipLinkState_t state, hipJitInputType type,
+                                        const char* path, unsigned int numOptions,
+                                        hipJitOption* options, void** optionValues) {
+    return hipCUResultTohipError(
+    cuLinkAddFile(state, type, path, numOptions, options, optionValues));
+}
+inline static hipError_t hipLinkComplete(hipLinkState_t state, void** hipBinOut, size_t* sizeOut) {
+    return hipCUResultTohipError(cuLinkComplete(state, hipBinOut, sizeOut));
+}
+inline static hipError_t hipLinkCreate(unsigned int numOptions, hipJitOption* options,
+                                       void** optionValues, hipLinkState_t* stateOut) {
+    return hipCUResultTohipError(cuLinkCreate(numOptions, options, optionValues, stateOut));
+}
+inline static hipError_t hipLinkDestroy(hipLinkState_t state) {
+    return hipCUResultTohipError(cuLinkDestroy(state));
 }
 
 inline static hipError_t hipModuleLoad(hipModule_t* module, const char* fname) {
