@@ -300,6 +300,12 @@ typedef enum cudaMemRangeAttribute hipMemRangeAttribute;
 #define hipMemRangeAttributeAccessedBy cudaMemRangeAttributeAccessedBy
 #define hipMemRangeAttributeLastPrefetchLocation cudaMemRangeAttributeLastPrefetchLocation
 
+#if CUDA_VERSION >= CUDA_12000
+typedef enum CUmemRangeHandleType_enum hipMemRangeHandleType;
+#define hipMemRangeHandleTypeDmaBufFd CU_MEM_RANGE_HANDLE_TYPE_DMA_BUF_FD
+#define hipMemRangeHandleTypeMax CU_MEM_RANGE_HANDLE_TYPE_MAX
+#endif
+
 #define hipSurfaceBoundaryMode cudaSurfaceBoundaryMode
 #define hipBoundaryModeZero cudaBoundaryModeZero
 #define hipBoundaryModeTrap cudaBoundaryModeTrap
@@ -2998,6 +3004,16 @@ inline static hipError_t hipMemUnmap(hipDeviceptr_t ptr, size_t size) {
 }
 #endif // CUDA_VERSION >= CUDA_10020
 
+#if CUDA_VERSION >= CUDA_12000
+inline static hipError_t hipMemGetHandleForAddressRange(void* handle, hipDeviceptr_t dptr,
+                                                        size_t size,
+                                                        hipMemRangeHandleType handleType,
+                                                        unsigned long long flags) {
+    return hipCUResultTohipError(cuMemGetHandleForAddressRange(handle, dptr, size, handleType,
+                                                               flags));
+}
+#endif
+
 inline static hipError_t hipOccupancyMaxActiveBlocksPerMultiprocessor(int* numBlocks,
                                                                       const void* func,
                                                                       int blockSize,
@@ -4708,12 +4724,19 @@ inline static void hipMemsetParamsToCUDAMemsetNodeParams(CUDA_MEMSET_NODE_PARAMS
 }
 
 inline static hipError_t hipDrvGraphAddMemsetNode(hipGraphNode_t* phGraphNode, hipGraph_t hGraph,
-                                const hipGraphNode_t* dependencies, size_t numDependencies,
-                                const hipMemsetParams* memsetParams, hipCtx_t ctx) {
-    CUDA_MEMSET_NODE_PARAMS cuMemsetParams;
-    hipMemsetParamsToCUDAMemsetNodeParams(&cuMemsetParams, memsetParams);
-    return hipCUResultTohipError(cuGraphAddMemsetNode(phGraphNode, hGraph, dependencies, numDependencies,
-                                                      &cuMemsetParams, ctx));
+                                                  const hipGraphNode_t* dependencies,
+                                                  size_t numDependencies,
+                                                  const hipMemsetParams* memsetParams, hipCtx_t ctx)
+{
+    if (memsetParams == nullptr) {
+        return hipCUResultTohipError(
+            cuGraphAddMemsetNode(phGraphNode, hGraph, dependencies, numDependencies, nullptr, ctx));
+    } else {
+        CUDA_MEMSET_NODE_PARAMS cuMemsetParams;
+        hipMemsetParamsToCUDAMemsetNodeParams(&cuMemsetParams, memsetParams);
+        return hipCUResultTohipError(cuGraphAddMemsetNode(phGraphNode, hGraph, dependencies,
+                                                          numDependencies, &cuMemsetParams, ctx));
+    }
 }
 
 inline static hipError_t hipDrvGraphAddMemcpyNode(hipGraphNode_t* phGraphNode, hipGraph_t hGraph,
@@ -4771,14 +4794,21 @@ inline static hipError_t hipDrvGraphExecMemcpyNodeSetParams(hipGraphExec_t hGrap
   }
 }
 
-inline static hipError_t hipDrvGraphExecMemsetNodeSetParams(
-    hipGraphExec_t hGraphExec, hipGraphNode_t hNode, const hipMemsetParams* memsetParams,
-    hipCtx_t ctx) {
-    CUDA_MEMSET_NODE_PARAMS cuMemsetParams;
-    hipMemsetParamsToCUDAMemsetNodeParams(&cuMemsetParams, memsetParams);
-    return hipCUResultTohipError(
-        cuGraphExecMemsetNodeSetParams(hGraphExec, hNode, &cuMemsetParams, ctx));
-  }
+inline static hipError_t hipDrvGraphExecMemsetNodeSetParams(hipGraphExec_t hGraphExec,
+                                                            hipGraphNode_t hNode,
+                                                            const hipMemsetParams* memsetParams,
+                                                            hipCtx_t ctx)
+{
+    if (memsetParams == nullptr) {
+        return hipCUResultTohipError(
+            cuGraphExecMemsetNodeSetParams(hGraphExec, hNode, nullptr, ctx));
+    } else {
+        CUDA_MEMSET_NODE_PARAMS cuMemsetParams;
+        hipMemsetParamsToCUDAMemsetNodeParams(&cuMemsetParams, memsetParams);
+        return hipCUResultTohipError(
+            cuGraphExecMemsetNodeSetParams(hGraphExec, hNode, &cuMemsetParams, ctx));
+    }
+}
 #endif
 
 #if CUDA_VERSION >= CUDA_11040
@@ -4830,6 +4860,9 @@ inline static hipError_t hipMemcpy2DArrayToArray(hipArray_t dst, size_t wOffsetD
 inline static hipError_t hipSetValidDevices(int* device_arr, int len) {
     return hipCUDAErrorTohipError(cudaSetValidDevices(device_arr, len));
 }
+
+
+
 #endif  //__CUDACC__
 
 #endif  // HIP_INCLUDE_HIP_NVIDIA_DETAIL_HIP_RUNTIME_API_H
