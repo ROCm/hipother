@@ -2097,6 +2097,10 @@ inline static hipError_t hipSetDevice(int device) {
     return hipCUDAErrorTohipError(cudaSetDevice(device));
 }
 
+inline static hipError_t hipSetValidDevices(int* device_arr, int len) {
+    return hipCUDAErrorTohipError(cudaSetValidDevices(device_arr, len));
+}
+
 inline static hipError_t hipChooseDevice(int* device, const hipDeviceProp_t* prop) {
 
     if (prop == NULL) {
