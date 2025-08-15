@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include <cuda_profiler_api.h>
 #include <cuda_fp16.h>
 
+#include <driver_types.h>
 #include <stdio.h>
 
 #define CUDA_9000 9000
@@ -1819,6 +1820,26 @@ typedef enum  cudaKernelNodeAttrID hipKernelNodeAttrID;
 #define hipKernelNodeAttributePriority cudaKernelNodeAttributePriority
 
 #if CUDA_VERSION >= CUDA_12000
+typedef union cudaStreamAttrValue hipStreamAttrValue;
+typedef enum cudaStreamAttrID hipStreamAttrID;
+#define hipStreamAttributeAccessPolicyWindow cudaStreamAttributeAccessPolicyWindow
+#define hipStreamAttributeSynchronizationPolicy cudaStreamAttributeSynchronizationPolicy
+#define hipStreamAttributeMemSyncDomainMap cudaStreamAttributeMemSyncDomainMap
+#define hipStreamAttributeMemSyncDomain cudaStreamAttributeMemSyncDomain
+#define hipStreamAttributePriority cudaStreamAttributePriority
+
+typedef enum cudaSynchronizationPolicy hipSynchronizationPolicy;
+#define hipSyncPolicyAuto cudaSyncPolicyAuto
+#define hipSyncPolicySpin cudaSyncPolicySpin
+#define hipSyncPolicyYield cudaSyncPolicyYield
+#define hipSyncPolicyBlockingSync cudaSyncPolicyBlockingSync
+
+typedef enum cudaLaunchMemSyncDomain hipLaunchMemSyncDomain;
+#define hipLaunchMemSyncDomainDefault cudaLaunchMemSyncDomainDefault
+#define hipLaunchMemSyncDomainRemote cudaLaunchMemSyncDomainRemote
+#endif
+
+#if CUDA_VERSION >= CUDA_12000
 typedef enum cudaGraphInstantiateResult hipGraphInstantiateResult;
 #define hipGraphInstantiateSuccess cudaGraphInstantiateSuccess
 #define hipGraphInstantiateError cudaGraphInstantiateError
@@ -3213,6 +3234,16 @@ inline static hipError_t hipStreamGetDevice(hipStream_t stream, hipDevice_t* dev
     if (err != hipSuccess) return err;
 
     return hipCUResultTohipError(cuCtxPopCurrent(&context));
+}
+
+inline static hipError_t hipStreamSetAttribute(hipStream_t stream, hipStreamAttrID attr,
+                                               const hipStreamAttrValue* value) {
+    return hipCUDAErrorTohipError(cudaStreamSetAttribute(stream, attr, value));
+}
+
+inline static hipError_t hipStreamGetAttribute(hipStream_t stream, hipStreamAttrID attr,
+                                               hipStreamAttrValue* value_out) {
+    return hipCUDAErrorTohipError(cudaStreamGetAttribute(stream, attr, value_out));
 }
 
 inline static hipError_t hipDriverGetVersion(int* driverVersion) {
@@ -4872,6 +4903,7 @@ inline static hipError_t hipMemcpy2DArrayToArray(hipArray_t dst, size_t wOffsetD
 inline static hipError_t hipSetValidDevices(int* device_arr, int len) {
     return hipCUDAErrorTohipError(cudaSetValidDevices(device_arr, len));
 }
+
 
 
 
