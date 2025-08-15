@@ -872,6 +872,29 @@ static inline void hipMemcpy2DTocudaMemcpy2D(CUDA_MEMCPY2D* a, const hip_Memcpy2
     a->Height = (size_t)p->Height;
 }
 
+#if CUDA_VERSION >= CUDA_12020
+typedef enum cudaMemcpyFlags hipMemcpyFlags;
+#define hipMemcpyFlagDefault cudaMemcpyFlagDefault
+#define hipMemcpyFlagPreferOverlapWithCompute cudaMemcpyFlagPreferOverlapWithCompute
+
+typedef enum cudaMemcpySrcAccessOrder hipMemcpySrcAccessOrder;
+#define hipMemcpySrcAccessOrderInvalid cudaMemcpySrcAccessOrderInvalid
+#define hipMemcpySrcAccessOrderStream cudaMemcpySrcAccessOrderStream
+#define hipMemcpySrcAccessOrderDuringApiCall cudaMemcpySrcAccessOrderDuringApiCall
+#define hipMemcpySrcAccessOrderAny cudaMemcpySrcAccessOrderAny
+#define hipMemcpySrcAccessOrderMax cudaMemcpySrcAccessOrderMax
+
+typedef struct cudaMemcpyAttributes hipMemcpyAttributes;
+typedef enum cudaMemcpy3DOperandType hipMemcpy3DOperandType;
+#define hipMemcpyOperandTypePointer cudaMemcpyOperandTypePointer
+#define hipMemcpyOperandTypeArray cudaMemcpyOperandTypeArray
+#define hipMemcpyOperandTypeMax cudaMemcpyOperandTypeMax
+
+typedef struct cudaOffset3D hipOffset3D;
+typedef struct cudaMemcpy3DOperand hipMemcpy3DOperand;
+typedef struct cudaMemcpy3DBatchOp hipMemcpy3DBatchOp;
+typedef struct cudaMemcpy3DPeerParms hipMemcpy3DPeerParms;
+#endif
 
 #define hipMemcpy3DParms cudaMemcpy3DParms
 #define hipArrayDefault cudaArrayDefault
@@ -2353,6 +2376,26 @@ inline static hipError_t hipMemcpy2DToArrayAsync(hipArray_t dst, size_t wOffset,
                                                            kind,
                                                            stream));
 }
+
+inline static hipError_t hipMemcpyBatchAsync(void **dsts, void **srcs, size_t *sizes, size_t count,
+                                             hipMemcpyAttributes *attrs, size_t *attrsIdxs,
+                                             size_t numAttrs, size_t *failIdx, hipStream_t stream) {
+    return hipCUDAErrorTohipError(cudaMemcpyBatchAsync(dsts, srcs, sizes, count, attrs, attrsIdxs,
+                                                       numAttrs, failIdx, stream));
+}
+
+inline static hipError_t hipMemcpy3DBatchAsync(size_t numOps, hipMemcpy3DBatchOp *opList,
+                                               size_t *failIdx, unsigned long long flags,
+                                               hipStream_t stream) {
+    return hipCUDAErrorTohipError(cudaMemcpy3DBatchAsync(numOps, opList, failIdx, flags, stream));
+}
+inline static hipError_t hipMemcpy3DPeer(hipMemcpy3DPeerParms *p) {
+    return hipCUDAErrorTohipError(cudaMemcpy3DPeer(p));
+}
+inline static hipError_t hipMemcpy3DPeerAsync(hipMemcpy3DPeerParms *p, hipStream_t stream) {
+    return hipCUDAErrorTohipError(cudaMemcpy3DPeerAsync(p, stream));
+}
+
 
 __HIP_DEPRECATED inline static hipError_t hipMemcpyToArray(hipArray_t dst, size_t wOffset,
                                                            size_t hOffset, const void* src,
