@@ -2548,6 +2548,39 @@ inline static hipError_t hipMemset3DAsync(hipPitchedPtr pitchedDevPtr, int  valu
     return hipCUDAErrorTohipError(cudaMemset3DAsync(pitchedDevPtr, value, extent, stream));
 }
 
+inline static hipError_t hipMemsetD2D8(hipDeviceptr_t dst, size_t dstPitch, unsigned char value,
+                                       size_t width, size_t height) {
+    return hipCUResultTohipError(cuMemsetD2D8(dst, dstPitch, value, width, height));
+}
+inline static hipError_t hipMemsetD2D8Async(hipDeviceptr_t dst, size_t dstPitch,
+                                            unsigned char value, size_t width, size_t height,
+                                            hipStream_t stream) {
+    return hipCUResultTohipError(cuMemsetD2D8Async(dst, dstPitch, value, width, height, stream));
+}
+
+inline static hipError_t hipMemsetD2D16(hipDeviceptr_t dst, size_t dstPitch, unsigned short value,
+                                        size_t width, size_t height) {
+    return hipCUResultTohipError(cuMemsetD2D16(dst, dstPitch, value, width, height));
+}
+
+inline static hipError_t hipMemsetD2D16Async(hipDeviceptr_t dst, size_t dstPitch,
+                                             unsigned short value, size_t width, size_t height,
+                                             hipStream_t stream) {
+    return hipCUResultTohipError(cuMemsetD2D16Async(dst, dstPitch, value, width, height,
+                                                       stream));
+}
+
+inline static hipError_t hipMemsetD2D32(hipDeviceptr_t dst, size_t dstPitch, unsigned int value,
+                                        size_t width, size_t height) {
+    return hipCUResultTohipError(cuMemsetD2D32(dst, dstPitch, value, width, height));
+}
+
+inline static hipError_t hipMemsetD2D32Async(hipDeviceptr_t dst, size_t dstPitch, unsigned int value,
+                               size_t width, size_t height, hipStream_t stream) {
+    return hipCUResultTohipError(cuMemsetD2D32Async(dst, dstPitch, value, width, height,
+                                                       stream));
+}
+
 inline static hipError_t hipGetDeviceProperties(hipDeviceProp_t* p_prop, int device) {
     if (p_prop == NULL) {
        return hipErrorInvalidValue;
