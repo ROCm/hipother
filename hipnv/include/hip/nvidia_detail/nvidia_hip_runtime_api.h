@@ -3446,6 +3446,10 @@ inline static hipError_t hipModuleLoad(hipModule_t* module, const char* fname) {
     return hipCUResultTohipError(cuModuleLoad(module, fname));
 }
 
+inline static hipError_t hipModuleLoadFatBinary(hipModule_t* module, const void* fatbin) {
+    return hipCUResultTohipError(cuModuleLoadFatBinary(module, fatbin));
+}
+
 inline static hipError_t hipModuleUnload(hipModule_t hmod) {
     return hipCUResultTohipError(cuModuleUnload(hmod));
 }
