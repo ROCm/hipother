@@ -1000,6 +1000,15 @@ typedef enum cudaGraphInstantiateFlags hipGraphInstantiateFlags;
 #define hipGraphInstantiateFlagDeviceLaunch cudaGraphInstantiateFlagDeviceLaunch
 #define hipGraphInstantiateFlagUseNodePriority cudaGraphInstantiateFlagUseNodePriority
 
+typedef enum cudaDriverEntryPointQueryResult hipDriverEntryPointQueryResult;
+#define hipDriverEntryPointSuccess cudaDriverEntryPointSuccess
+#define hipDriverEntryPointSymbolNotFound cudaDriverEntryPointSymbolNotFound
+#define hipDriverEntryPointVersionNotSufficent cudaDriverEntryPointVersionNotSufficent
+
+#define hipEnableDefault cudaEnableDefault
+#define hipEnableLegacyStream cudaEnableLegacyStream
+#define hipEnablePerThreadDefaultStream cudaEnablePerThreadDefaultStream
+
 inline static hipError_t hipCUDAErrorTohipError(cudaError_t cuError) {
     switch (cuError) {
         case cudaSuccess:
@@ -3720,6 +3729,13 @@ inline static hipError_t hipGetFuncBySymbol(hipFunction_t* functionPtr, const vo
 inline static hipError_t hipGetChannelDesc(hipChannelFormatDesc* desc, hipArray_const_t array)
 {
     return hipCUDAErrorTohipError(cudaGetChannelDesc(desc,array));
+}
+
+inline static hipError_t hipGetDriverEntryPoint(const char* symbol, void** funcPtr,
+                                                unsigned long long flags,
+                                                hipDriverEntryPointQueryResult* driverStatus)
+{
+    return hipCUDAErrorTohipError(cudaGetDriverEntryPoint(symbol, funcPtr, flags, driverStatus));
 }
 
 inline static hipError_t hipLaunchCooperativeKernel(const void* f, dim3 gridDim, dim3 blockDim,
