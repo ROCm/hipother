@@ -2050,6 +2050,27 @@ inline static hipError_t hipMemPrefetchAsync(const void* dev_ptr, size_t count, 
     return hipCUDAErrorTohipError(cudaMemPrefetchAsync(dev_ptr, count, device, stream));
 }
 
+inline static hipError_t hipMemPrefetchAsync_v2(const void *dev_ptr, size_t count,
+                                                hipMemLocation location, unsigned int flags,
+                                                hipStream_t stream __dparm(0)) {
+#if CUDA_VERSION >= 13000
+    return hipCUDAErrorTohipError(cudaMemPrefetchAsync(dev_ptr, count, location, flags, stream));
+#else
+    return hipCUDAErrorTohipError(cudaMemPrefetchAsync_v2(dev_ptr, count, location, flags,
+                                                          stream));
+#endif
+}
+
+inline static hipError_t hipMemAdvise_v2(const void* dev_ptr, size_t count,
+                                         hipMemoryAdvise advice, hipMemLocation location) {
+#if CUDA_VERSION >= 13000
+    return hipCUDAErrorTohipError(cudaMemAdvise(dev_ptr, count, advice , location));
+#else
+    return hipCUDAErrorTohipError(cudaMemAdvise_v2(dev_ptr, count, advice , location));
+#endif
+}
+
+
 inline static hipError_t hipMemRangeGetAttribute(void* data, size_t data_size,
                                                  hipMemRangeAttribute attribute,
                                                  const void* dev_ptr, size_t count) {
