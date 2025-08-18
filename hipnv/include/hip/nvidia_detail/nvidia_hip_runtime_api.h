@@ -672,7 +672,7 @@ static inline void hipBatchMemOpParamsTocudaBatchMemOpParams(CUstreamBatchMemOpP
             a[i].writeValue.alias = (CUdeviceptr)(p[i].writeValue.alias);
         }
         else if (p[i].memoryBarrier.operation == hipStreamMemOpBarrier) {
-            a[i].memoryBarrier.operation == CU_STREAM_MEM_OP_BARRIER;
+            a[i].memoryBarrier.operation = CU_STREAM_MEM_OP_BARRIER;
             a[i].memoryBarrier.flags = p[i].memoryBarrier.flags;
         }
         else if (p[i].flushRemoteWrites.operation == hipStreamMemOpFlushRemoteWrites) {
